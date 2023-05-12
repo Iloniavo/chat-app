@@ -1,24 +1,49 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import FacebookIcon from "@mui/icons-material/FacebookRounded";
-import GitHubIcon from "@mui/icons-material/GitHub";
+//import FacebookIcon from "@mui/icons-material/FacebookRounded";
+//import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
-import { Box, Grid, Paper, Stack } from "@mui/material";
-import LoginIcon from "@mui/icons-material/Login";
+import { Box, Grid, Link, Paper, Stack, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import {
-  signInEmail,
-  signInWithFacebook,
-  signInWithGithub,
-  signInWithGoogle,
-} from "@/utils/signIn";
-import { useStore } from "@/utils/useStore";
+import { useGoogleAuth, useLoginStore } from "../hooks";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { SubmitHandler, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 export default function Login() {
-  const { email, setEmail, password, setPassword } = useStore();
-
+  const { email, setEmail, password, setPassword } = useLoginStore();
   const router = useRouter();
+  const onSubmit: SubmitHandler<any> = (data) => console.log(data);
+  const validationSchema = yup.object().shape({
+    email: yup.string().required("Email is required").email("Invalid email"),
+    password: yup.string().required("Password is required"),
+  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(validationSchema) });
+
+  const useEmailAuth = async (email: string, pass: string) => {
+    await axios
+      .post("http://localhost:8080/users/login", {
+        email: email,
+        password: pass,
+      })
+      .then((response: AxiosResponse) => {
+        console.log(response.data.user);
+        localStorage.setItem("token", response.data.user.token);
+        localStorage.setItem("email", email);
+        localStorage.setItem("password", pass);
+        localStorage.setItem("userInfo", JSON.stringify(response.data.user));
+        setPassword("");
+        setEmail("");
+        router.push("/home");
+      })
+      .catch((error: AxiosError) => console.log(error.message));
+  };
 
   return (
     <div
@@ -39,14 +64,19 @@ export default function Login() {
           alignItems: "center",
         }}
       >
-        <div style={{ display: "flex", marginTop: "20px" }}>
-          <h3 style={{ paddingBottom: "2px" }}>Login</h3>
-          <LoginIcon sx={{ paddingTop: "5px" }} />
-        </div>
-
-        <div className="input">
-          <Box component="form" noValidate sx={{ mt: 1 }}>
-            <Grid item xs={12}>
+        <div
+          className="input"
+          style={{
+            width: "50%",
+            marginTop: "1rem",
+          }}
+        >
+          <Box
+            component="form"
+            sx={{ mt: 1 }}
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <Grid item xs={8}>
               <TextField
                 margin="normal"
                 fullWidth
@@ -59,9 +89,13 @@ export default function Login() {
                 value={email}
                 onChange={(e: any) => setEmail(e.target.value)}
                 sx={{ color: "whitesmoke" }}
+                inputRef={...register("email")}
+                name="email"
+                error={errors.name}
+                helperText={errors.name?.message}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={8}>
               <TextField
                 margin="normal"
                 required
@@ -73,6 +107,10 @@ export default function Login() {
                 variant="outlined"
                 value={password}
                 onChange={(e: any) => setPassword(e.target.value)}
+                inputRef={...register("password")}
+                name="password"
+                error={errors.name}
+                helperText={errors.name?.message}
               />
             </Grid>
 
@@ -80,29 +118,42 @@ export default function Login() {
               <Button
                 sx={{ fontSize: "2vh" }}
                 fullWidth
-                onClick={() => signInEmail(email, password, router)}
+                onClick={() => useEmailAuth(email, password)}
                 variant="contained"
+                type="submit"
               >
                 Sign in
               </Button>
 
+              <Grid item xs={8}>
+                <Typography
+                  sx={{
+                    marginLeft: "40%",
+                  }}
+                >
+                  Or sign in with
+                </Typography>
+              </Grid>
               <Stack
-                direction="row"
+                direction="column"
                 spacing={2}
                 sx={{ justifyContent: "center", alignItems: "center" }}
               >
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={8}>
                   <Button
                     sx={{ width: "10vw", fontSize: "0.8rem" }}
                     fullWidth
-                    onClick={() => signInWithGoogle(router)}
+                    onClick={() => useGoogleAuth(router)}
                     variant="contained"
                     color="error"
                   >
                     <span> Google</span> <GoogleIcon />
                   </Button>
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid item xs={12}>
+                  <Link href={"/sign-up"}>Don't have an account ?</Link>
+                </Grid>
+                {/**  <Grid item xs={12} sm={4}>
                   <Button
                     sx={{ width: "10vw", fontSize: "0.8rem" }}
                     onClick={() => signInWithGithub(router)}
@@ -122,6 +173,7 @@ export default function Login() {
                     <span> facebook</span> <FacebookIcon />
                   </Button>
                 </Grid>
+              */}
               </Stack>
             </Stack>
           </Box>

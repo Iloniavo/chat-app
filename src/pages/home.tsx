@@ -1,35 +1,25 @@
 import { useRouter } from "next/router";
 import React from "react";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { useEffect} from "react";
 import { Button } from "@mui/material";
-import auth from "@/config/config";
-import { useStore } from "@/utils/useStore";
+
+import { useGetAuthUserInfo } from "../hooks/useGetAuthUserInfo";
+import { useLoginStore } from "../hooks";
 
 export default function home() {
   const router = useRouter();
 
-  const { name, setName, picUrl, setPicUrl } = useStore();
+  const { name, setName, picUrl } = useLoginStore();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log(user);
-
-      if (user?.displayName && user.photoURL) {
-        setName(user.displayName);
-        setPicUrl(user.photoURL);
-      } else if (user?.email) {
-        setName(user.email);
-      } else {
-        router.push("/components/login");
-      }
-    });
-    return unsubscribe;
-  });
+    return () => {
+      useGetAuthUserInfo() ? setName(useGetAuthUserInfo().name) : "";
+    };
+  }, []);
 
   const logOut = () => {
-    signOut(auth);
-    router.push("/components/login");
+    router.push("/login").then((r) => console.log("Success"));
+    localStorage.clear();
   };
 
   return (
