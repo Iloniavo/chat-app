@@ -227,3 +227,32 @@
     transform: rotate(0deg);
   }
 }
+
+.sidebar {
+  width: 250px;
+  height: 95vh;
+  background-color: #04323A ;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 9999;
+  transition: transform 0.3s ease;
+  transform: translate(-250px);
+  color: aliceblue;
+}
+
+.sidebarOpen {
+  transform: translate(0);
+}
+
+.content{
+  margin-left: 250px;
+}
+
+.sidebarButtonContainer {
+  position: relative;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}

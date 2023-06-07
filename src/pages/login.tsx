@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {  useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 //import FacebookIcon from "@mui/icons-material/FacebookRounded";
@@ -6,16 +6,17 @@ import TextField from "@mui/material/TextField";
 import GoogleIcon from "@mui/icons-material/Google";
 import { Box, Grid, Link, Paper, Stack, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import { useGoogleAuth, useLoginStore } from "../hooks";
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useGoogleAuth } from "../hooks";
+import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Cookies from 'js-cookie';
+import axios from "axios";
+import {loginWithEmail} from "../provider/AuthProvider";
+
 
 export default function Login() {
-  const { email, setEmail, password, setPassword } = useLoginStore();
   const router = useRouter();
-  const onSubmit: SubmitHandler<any> = (data) => console.log(data);
   const validationSchema = yup.object().shape({
     email: yup.string().required("Email is required").email("Invalid email"),
     password: yup.string().required("Password is required"),
@@ -23,26 +24,15 @@ export default function Login() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm({ resolver: yupResolver(validationSchema) });
+    formState: { errors }
+  } = useForm({ resolver: yupResolver(validationSchema), mode: "all" });
 
-  const useEmailAuth = async (email: string, pass: string) => {
-    await axios
-      .post("http://localhost:8080/users/login", {
-        email: email,
-        password: pass,
-      })
-      .then((response: AxiosResponse) => {
-        console.log(response.data.user);
-        localStorage.setItem("token", response.data.user.token);
-        localStorage.setItem("email", email);
-        localStorage.setItem("password", pass);
-        localStorage.setItem("userInfo", JSON.stringify(response.data.user));
-        setPassword("");
-        setEmail("");
-        router.push("/home");
-      })
-      .catch((error: AxiosError) => console.log(error.message));
+  const login = async (user) => {
+     await loginWithEmail(user)
+          .then((response) => {
+           response.data ? Cookies.set('token', response.data.user.token): console.log("Tsy mety");
+            router.push("/profile")
+          })
   };
 
   return (
@@ -71,11 +61,7 @@ export default function Login() {
             marginTop: "1rem",
           }}
         >
-          <Box
-            component="form"
-            sx={{ mt: 1 }}
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          <Box component="form" sx={{ mt: 1 }} onSubmit={handleSubmit(login)}>
             <Grid item xs={8}>
               <TextField
                 margin="normal"
@@ -86,13 +72,11 @@ export default function Login() {
                 type="email"
                 label="Email"
                 variant="outlined"
-                value={email}
-                onChange={(e: any) => setEmail(e.target.value)}
                 sx={{ color: "whitesmoke" }}
-                inputRef={...register("email")}
-                name="email"
-                error={errors.name}
-                helperText={errors.name?.message}
+                {...register("email")}
+                error={errors.email}
+                helperText={errors.email?.message}
+                name={"email"}
               />
             </Grid>
             <Grid item xs={8}>
@@ -105,12 +89,10 @@ export default function Login() {
                 type="password"
                 label="Password"
                 variant="outlined"
-                value={password}
-                onChange={(e: any) => setPassword(e.target.value)}
-                inputRef={...register("password")}
+                {...register("password")}
                 name="password"
-                error={errors.name}
-                helperText={errors.name?.message}
+                error={errors.password} // Utilisez errors.password au lieu de errors.name
+                helperText={errors.password?.message} //
               />
             </Grid>
 
@@ -118,7 +100,6 @@ export default function Login() {
               <Button
                 sx={{ fontSize: "2vh" }}
                 fullWidth
-                onClick={() => useEmailAuth(email, password)}
                 variant="contained"
                 type="submit"
               >

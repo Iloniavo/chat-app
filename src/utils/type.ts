@@ -11,11 +11,6 @@ export type UserData = {
   token: string;
 };
 
-export type LogData = {
-  status: boolean;
-  user: UserData;
-};
-
 export interface LogUser {
   email: string;
   password: string;
@@ -24,4 +19,49 @@ export interface LogUser {
 export interface CreateUser extends LogUser {
   name: string;
   bio: string;
+}
+
+export interface UserMember {
+  id: number;
+  name: string;
+  bio: string;
+  email:string
+}
+
+export enum ChannelType {
+  PUBLIC_CHANNEL = "public",
+  PRIVATE_CHANNEL = "private",
+}
+
+export type Channels = {
+  id: number,
+  name: string,
+  type: ChannelType,
+  createdAt: string,
+  updatedAt: string,
+  owner: ChannelOwner,
+  ownerId: number
+}
+
+export type ChannelOwner = {
+  id: number,
+  email: string,
+  name: string
+}
+
+export interface Message extends SendMessage{
+  id: number,
+  updatedAt: string,
+  createdAt: string,
+  senderId: number,
+  sender: {
+    id: number,
+    name: string,
+    email: string
+  }
+}
+
+export interface SendMessage {
+  channelId: number,
+  content: string,
 }

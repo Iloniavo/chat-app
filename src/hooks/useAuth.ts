@@ -7,10 +7,6 @@ import {
 } from "firebase/auth";
 import { NextRouter } from "next/router";
 import auth from "../config/config";
-import { ApiContext } from "../context/ApiContext";
-import { UserData } from "../utils/type";
-import { AxiosError, AxiosResponse } from "axios";
-import { useContext, useState } from "react";
 
 export const useGoogleAuth = async (router: NextRouter) => {
   signInWithPopup(auth, new GoogleAuthProvider())

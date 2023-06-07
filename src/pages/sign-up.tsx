@@ -1,54 +1,42 @@
 import React from "react";
 import { Box, Grid, Link, Stack, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
-import { useGoogleAuth, useLoginStore } from "../hooks";
-import GoogleIcon from "@mui/icons-material/Google";
+import { useAuthStore, useLoginStore } from "../hooks";
 import { useRouter } from "next/router";
 import TextField from "@mui/material/TextField";
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { AxiosError } from "axios";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import {createUser} from "../provider/AuthProvider";
+import Cookies from "js-cookie";
 
 export default function SignUp() {
-  const { email, setEmail, password, setPassword, name, setName, bio, setBio } =
-    useLoginStore();
   const validationSchema = yup.object().shape({
     email: yup.string().required("Email is required").email("Invalid email"),
     password: yup.string().required("Password is required"),
     bio: yup.string().required("Bio is required"),
     name: yup.string().required("Name is required"),
+    confirmPassword: yup.string().required("Confirm your password").oneOf([yup.ref('password')], "Password does not matches")
   });
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(validationSchema) });
-  const onSubmit: SubmitHandler<any> = (data) => console.log(data);
+  } = useForm({ resolver: yupResolver(validationSchema), mode: "all",shouldUnregister: false,
+    criteriaMode: "all", });
 
   const router = useRouter();
 
-  const SignUp = async () => {
-    await axios
-      .post("http://localhost:8080/users", {
-        email: email,
-        password: password,
-        bio: bio,
-        name: name,
-      })
+  const SignUp = async (data: any) => {
+    await createUser(data)
       .then((response) => {
-        localStorage.setItem("token", response.data.user.token);
-        localStorage.setItem("email", email);
-        localStorage.setItem("password", password);
-        localStorage.setItem("userInfo", JSON.stringify(response.data.user));
-        setPassword("");
-        setBio("");
-        setName("");
-        setEmail("");
-        router.push("/home");
+        response.data ? Cookies.set('token', response.data.user.token): console.log("Tsy mety");
+        router.push("/profile")
       })
-      .catch((error: AxiosError) => console.log(error.message));
+      .catch((error) => console.error(error));
   };
+
 
   return (
     <div
@@ -76,98 +64,110 @@ export default function SignUp() {
             marginTop: "1rem",
           }}
         >
-          <Box component="form" sx={{ mt: 1 }}>
-            <Grid item xs={8}>
-              <TextField
-                margin="normal"
-                fullWidth
-                required
-                autoFocus
-                id="filled-basic"
-                type="email"
-                label="Email"
-                variant="outlined"
-                value={email}
-                onChange={(e: any) => setEmail(e.target.value)}
-                sx={{ color: "whitesmoke" }}
-                inputRef={...register("email")}
-                error={errors.name}
-                helperText={errors.name?.message}
-              />
-            </Grid>
-            <Grid item xs={8}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                autoFocus
-                id="filled-basic"
-                type="password"
-                label="Password"
-                variant="outlined"
-                value={password}
-                onChange={(e: any) => setPassword(e.target.value)}
-                inputRef={...register("password")}
-                error={errors.name}
-                helperText={errors.name?.message}
-              />
-            </Grid>
-            <Grid item xs={8}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                autoFocus
-                id="filled-basic"
-                type="text"
-                label="Name"
-                variant="outlined"
-                value={name}
-                onChange={(e: any) => setName(e.target.value)}
-                inputRef={...register("name")}
-                error={errors.name}
-                helperText={errors.name?.message}
-              />
-            </Grid>
-            <Grid item xs={8}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                autoFocus
-                id="filled-basic"
-                type="text"
-                label="Bio"
-                variant="outlined"
-                value={bio}
-                onChange={(e: any) => setBio(e.target.value)}
-                inputRef={...register("bio")}
-                error={errors.name}
-                helperText={errors.name?.message}
-              />
-            </Grid>
+          <form onSubmit={handleSubmit(SignUp)}>
+            <Box sx={{ mt: 1 }}>
+              <Grid item xs={8}>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  required
+                  autoFocus
+                  id="filled-basic"
+                  type="email"
+                  label="Email"
+                  variant="outlined"
+                  sx={{ color: "whitesmoke" }}
+                  {...register("email")}
+                  error={errors.email}
+                  helperText={errors.email?.message}
+                  name="email"
+                />
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  autoFocus
+                  id="filled-basic"
+                  type="password"
+                  label="Password"
+                  variant="outlined"
+                  {...register("password")}
+                  name="password"
+                  error={errors.password} // Utilisez errors.password au lieu de errors.name
+                  helperText={errors.password?.message} //
+                />
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    autoFocus
+                    id="filled-basic"
+                    type="password"
+                    label="Confirm password"
+                    variant="outlined"
+                    {...register("confirmPassword")}
+                    error={errors.confirmPassword}
+                    helperText={errors.confirmPassword?.message} //
+                />
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  autoFocus
+                  id="filled-basic"
+                  type="text"
+                  label="Name"
+                  variant="outlined"
+                  {...register("name")}
+                  error={errors.name}
+                  helperText={errors.name?.message}
+                  name={"name"}
+                />
+              </Grid>
+              <Grid item xs={8}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  autoFocus
+                  id="filled-basic"
+                  type="text"
+                  label="Bio"
+                  variant="outlined"
+                  {...register("bio")}
+                  error={errors.bio}
+                  helperText={errors.bio?.message}
+                  name={"bio"}
+                />
+              </Grid>
 
-            <Stack direction="column" spacing={2}>
-              <Button
-                sx={{ fontSize: "2vh" }}
-                fullWidth
-                onClick={() => SignUp()}
-                variant="contained"
-                type="submit"
-              >
-                Sign up
-              </Button>
-              <Stack
-                direction="column"
-                spacing={2}
-                sx={{ justifyContent: "center", alignItems: "center" }}
-              >
-                <Grid item xs={12}>
-                  <Link href={"/login"}>Already have an account ?</Link>
-                </Grid>
+              <Stack direction="column" spacing={2}>
+                <Button
+                  sx={{ fontSize: "2vh" }}
+                  fullWidth
+                  variant="contained"
+                  type="submit"
+                >
+                  Sign up
+                </Button>
+                <Stack
+                  direction="column"
+                  spacing={2}
+                  sx={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <Grid item xs={12}>
+                    <Link href={"/login"}>Already have an account ?</Link>
+                  </Grid>
+                </Stack>
               </Stack>
-            </Stack>
-          </Box>
+            </Box>
+          </form>
         </div>
       </Box>
     </div>

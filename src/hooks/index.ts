@@ -1,2 +1,2 @@
-export * from "./useLoginStore";
+export * from "./useAuthStore";
 export * from "./useAuth";
