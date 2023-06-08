@@ -5,7 +5,7 @@ import Sidebar from "../../components/SideBar";
 import MessagesList from "../../components/MessagesList";
 import { useRouter } from "next/router";
 import useSWR from 'swr';
-import { getToken } from "../../hooks/useGetAuthUserInfo";
+import { getToken } from "@/hooks/useGetAuthUserInfo";
 import { getChannelById } from "@/provider/ChannelProvider";
 import { sendMessage } from "@/provider/MessageProvider";
 import { Message } from "@/utils/type";
@@ -22,23 +22,21 @@ const fetcher = (url) => axios.get(url, {
     },
 }).then((res) => res.data);
 
-export default function Id({channel, currentUser}) {
-    const router = useRouter();
-    const { id } = router.query;
+export default function Id({channel, currentUser,id}) {
+
 
     const { data, error } = useSWR(`http://localhost:8080/messages/channel/${id}`, fetcher, { refreshInterval: 5000 });
 
     const [isSideBarOpen, setIsSideBarOpen] = useState(true);
     const [messageContent, setMessageContent] = useState("");
     const [messagesList, setMessageList] = useState<Message[] | null>(null);
-    const [message, setMessage] = useState({});
 
     const handleToggle = () => setIsSideBarOpen(!isSideBarOpen);
     useEffect(() => {
         if (data) {
-            setMessageList([...data.messages, message].reverse());
+            setMessageList([data.messages].reverse());
         }
-    }, [data, message]);
+    }, [data]);
 
     const handleSendMessage = async () => {
         const newMessage = { channelId: id, content: messageContent, recipientId: null };
@@ -74,7 +72,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, params 
     return {
         props: {
             channel,
-            currentUser
+            currentUser,
+            id
         },
     };
 };

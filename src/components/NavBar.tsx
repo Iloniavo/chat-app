@@ -85,5 +85,3 @@ const Navbar = ({handleSideBarOpen, title, userName}) => {
 };
 
 export default Navbar;
-
-//TODO: add channels dropdown and messages dropdown

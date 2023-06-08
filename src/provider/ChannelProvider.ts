@@ -1,12 +1,14 @@
 import {globalAxios as axios} from "../config/axiosConf";
+import {getAllUsers} from "@/provider/AuthProvider";
 
 export async function getChannels(token) {
-    return await axios.get("/channels",
+    let req = await axios.get("/channels",
         {
             headers: {
                 Authorization: `Bearer ${token}`
 }
 })
+    return req.data.channels;
 }
 
 export async function getChannelById(id, token) {
@@ -34,10 +36,7 @@ export function addChannelMembers(channelId, token, data) {
     })
 }
 
-export function getChannelByOwner(token){
-    return axios.get('/channels/user', {
-        headers: {
-            Authorization: `Bearer ${token}` // Ajoutez l'en-tête d'autorisation avec le token
-        }
-    })
+export async function getUserById(id, token) {
+    let allUsers = await getAllUsers(token)
+    return allUsers.find((item) => item.id.toString() === id)
 }

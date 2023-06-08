@@ -11,7 +11,7 @@ export default function MessagesList({data, messageContent,setMessageContent, ha
                 { data == null ? <Loader/> : <Box sx={{width: "90%", height: '90%', margin: 'auto', border: 'solid black 2px', overflow: "auto"}}>
                     {data.map((item) => <MessageItem content={item.content} date={item.createdAt} sender={item.sender?.name} />)}
                 </Box>}
-                <TextField value={messageContent} multiline rows={4} placeholder={"Send a message"} onChange={(e: any) => setMessageContent(e.target.value)} />
+                <TextField value={messageContent} multiline rows={4} placeholder={"Send a messages"} onChange={(e: any) => setMessageContent(e.target.value)} />
                 <IconButton onClick={handleSendMessage} disabled={messageContent.trim() === ""}>
                     <SendIcon />
                 </IconButton>
