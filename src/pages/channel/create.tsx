@@ -20,9 +20,9 @@ import {Add} from "@mui/icons-material";
 import {createChannel} from "../../provider/ChannelProvider";
 import {useRouter} from "next/router";
 import BasicModal from "../../components/Modal";
-import {getAllUsers} from "@/provider/AuthProvider";
+import {getAllUsers, getCurrentUserInfo} from "@/provider/AuthProvider";
 
-export default function CreateChannel({suggestedMembers, token}){
+export default function CreateChannel({suggestedMembers, token, currentUser}){
     const [name, setName] = useState('');
     const [type, setType] = useState('');
     const [members, setMembers] = useState([]);
@@ -100,7 +100,7 @@ export default function CreateChannel({suggestedMembers, token}){
 
     return (<>
             <BasicModal  open={isModalOpen} handleClose={handleModalClose}/>
-            <Navbar handleSideBarOpen={handleToggle} title={"Create a channel"}/>
+            <Navbar handleSideBarOpen={handleToggle} title={"Create a channel"} userName={currentUser.name}/>
         <Sidebar handleClose={handleToggle} isOpen={isSideBarOpen} />
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Box component={'form'} sx={{
@@ -195,10 +195,12 @@ export async function getServerSideProps({ req, res }) {
                 res.end();
         }
     let users = await getAllUsers(token)
+    let currentUser = await getCurrentUserInfo(token)
         return {
             props: {
                 suggestedMembers: users,
-                token
+                token,
+                currentUser
             }
         }
 }

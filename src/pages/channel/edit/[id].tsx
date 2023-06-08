@@ -3,13 +3,13 @@ import Navbar from "@/components/NavBar";
 import Sidebar from "@/components/SideBar";
 import React, {useState} from "react";
 import {Box, Button, Checkbox, FormControlLabel, List, ListItem, ListItemText, TextField} from "@mui/material";
-import {getAllUsers} from "@/provider/AuthProvider";
+import {getAllUsers, getCurrentUserInfo} from "@/provider/AuthProvider";
 import {useRouter} from "next/router";
 import {toast, ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 
-export default function EditChannel({users, idChannel, token}){
+export default function EditChannel({users, idChannel, token, channel, currentUser}){
 
     const router = useRouter();
     const { push } = router.query
@@ -61,9 +61,12 @@ export default function EditChannel({users, idChannel, token}){
 
     return (
         <>
-            <Navbar handleSideBarOpen={handleToggle} title={"Profile"}/>
+            <Navbar handleSideBarOpen={handleToggle} title={channel.name} userName={currentUser.name}/>
             <Sidebar handleClose={handleToggle} isOpen={isSideBarOpen} />
-            <Box component={'form'} onSubmit={handleSubmit} >
+            <Box component={'form'} onSubmit={handleSubmit} sx={{
+                width: '30vw',
+                margin: ' 100px auto'
+            }}>
                 <TextField
                     label="Search by username"
                     value={searchTerm}
@@ -83,9 +86,15 @@ export default function EditChannel({users, idChannel, token}){
                         </ListItem>
                     ))}
                 </List>
-                <Button type={'submit'}>
+                <Box sx={{
+                    width: '10vw',
+                    marginTop: '20px',
+                    marginLeft: '280px',
+                }}>
+                <Button type={'submit'} variant={'contained'}>
                     Add members
                 </Button>
+                </Box>
                 <ToastContainer style={{zIndex: '999999'}} />
             </Box>
         </>
@@ -102,13 +111,14 @@ export async function getServerSideProps({req, res, params}){
 
     const channel = await getChannelById(id, token);
     const users = await getAllUsers(token);
-
+    const currentUser = await getCurrentUserInfo(token)
     return {
         props: {
             channel,
             users,
             token,
-            idChannel: id
+            idChannel: id,
+            currentUser
         },
     };
 }

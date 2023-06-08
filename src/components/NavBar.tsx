@@ -12,7 +12,7 @@ import { Menu as MenuIcon, Person as PersonIcon, ExitToApp as ExitToAppIcon } fr
 import {useRouter} from "next/router";
 import Cookies from "js-cookie";
 
-const Navbar = ({handleSideBarOpen, title}) => {
+const Navbar = ({handleSideBarOpen, title, userName}) => {
 
     const router = useRouter()
 
@@ -71,12 +71,13 @@ const Navbar = ({handleSideBarOpen, title}) => {
                         {title}
                     </Typography>
                     <Typography sx={{ marginRight: '5px' }} >
-                        user.name
+                        {userName}
                     </Typography>
                 </div>
                 <AccountCircleIcon
                     onClick={handleMenuOpen}
                     style={{cursor: "pointer"}}
+                    fontSize={'large'}
                 />
             </Toolbar>
         </AppBar>

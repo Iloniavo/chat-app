@@ -7,7 +7,7 @@ export default function Home() {
   const router = useRouter();
   useEffect(() => {
     return () => {
-      isAuthenticated() ? router.push("/home") : router.push("/login");
+      isAuthenticated() ? router.push("/profile") : router.push("/login");
     };
   }, []);
   return (

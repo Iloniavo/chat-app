@@ -9,7 +9,7 @@ import {Button, Container, TextField, Typography} from "@mui/material";
 import * as yup from "yup"
 import {yupResolver} from "@hookform/resolvers/yup";
 
-export default function Profile({userDetails, token}) {
+export default function Profile({currentUser, token}) {
     const schema = yup.object().shape({
         name: yup.string().required('Name is required'),
         oldPassword: yup.string().required(''),
@@ -24,14 +24,14 @@ export default function Profile({userDetails, token}) {
     const onSubmit = async (data) => {
         const { name, bio, oldPassword, confirmNewPassword } = data
         console.log(data);
-        await updateUserInfo({name: name, email: userDetails.email,oldPassword: oldPassword, password: confirmNewPassword, bio: bio }, token).then((res) => console.log(res.data))
+        await updateUserInfo({name: name, email: currentUser.email,oldPassword: oldPassword, password: confirmNewPassword, bio: bio }, token).then((res) => console.log(res.data))
     };
   const [isSideBarOpen, setIsSideBarOpen] = useState(true)
 
   const handleToggle = () => setIsSideBarOpen(!isSideBarOpen)
   return (
       <>
-          <Navbar handleSideBarOpen={handleToggle} title={"Profile"}/>
+          <Navbar handleSideBarOpen={handleToggle} title={"Profile"} userName={currentUser.name}/>
           <Sidebar handleClose={handleToggle} isOpen={isSideBarOpen} />
           <Container maxWidth="sm">
               <Typography variant="h4" component="h1" align="center" gutterBottom>
@@ -42,7 +42,7 @@ export default function Profile({userDetails, token}) {
                       label="Email"
                       fullWidth
                       disabled
-                      defaultValue={userDetails.email}
+                      defaultValue={currentUser.email}
                       {...register('email')}
                   />
                   <TextField
@@ -51,7 +51,7 @@ export default function Profile({userDetails, token}) {
                       {...register('name')}
                       error={Boolean(errors.name)}
                       helperText={errors.name?.message}
-                      defaultValue={userDetails.name}
+                      defaultValue={currentUser.name}
                   />
                   <TextField
                       label="Old password"
@@ -82,7 +82,7 @@ export default function Profile({userDetails, token}) {
                       fullWidth
                       multiline
                       rows={4}
-                      defaultValue={userDetails.bio}
+                      defaultValue={currentUser.bio}
                       {...register('bio')}
                   />
                   <Button
@@ -108,11 +108,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             res.end();
     }
 
-    const userDetails = await getCurrentUserInfo(token)
+    const currentUser = await getCurrentUserInfo(token)
 
     return {
         props: {
-            userDetails,
+            currentUser,
             token
         },
     };
