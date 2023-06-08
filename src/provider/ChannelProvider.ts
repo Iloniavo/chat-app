@@ -26,10 +26,10 @@ export function createChannel(channel, token) {
     })
 }
 
-export function addChannelMembers(channelId, token) {
-    return axios.post(`/channels/${channelId}/members`, {
+export function addChannelMembers(channelId, token, data) {
+    return axios.post(`/channels/${channelId}/members`,data, {
         headers: {
-            Authorization: `Bearer ${token}` // Ajoutez l'en-tête d'autorisation avec le token
+            Authorization: `Bearer ${token}`
         }
     })
 }

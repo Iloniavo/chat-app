@@ -25,7 +25,7 @@ export default function Login() {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm({ resolver: yupResolver(validationSchema), mode: "all" });
+  } = useForm({ resolver: yupResolver(validationSchema) });
 
   const login = async (user) => {
      await loginWithEmail(user)

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../../components/NavBar";
 import Sidebar from "../../components/SideBar";
-import { Box, IconButton, TextField } from "@mui/material";
-import SendIcon from '@mui/icons-material/Send';
 import MessagesList from "../../components/MessagesList";
 import { useRouter } from "next/router";
 import useSWR from 'swr';
@@ -12,6 +10,8 @@ import { getChannelById } from "@/provider/ChannelProvider";
 import { sendMessage } from "@/provider/MessageProvider";
 import { Message } from "@/utils/type";
 import {GetServerSideProps} from "next";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import {IconButton} from "@mui/material";
 
 const token = getToken();
 
@@ -35,7 +35,7 @@ export default function Id({channel}) {
     const handleToggle = () => setIsSideBarOpen(!isSideBarOpen);
     useEffect(() => {
         if (data) {
-            setMessageList([...data.messages, message]);
+            setMessageList([...data.messages, message].reverse());
         }
     }, [data, message]);
 
@@ -52,15 +52,11 @@ export default function Id({channel}) {
         <>
             <Navbar handleSideBarOpen={handleToggle} title={channel.name} />
             <Sidebar isOpen={isSideBarOpen} />
-            <Box sx={{ width: "60vw", height: "60vh", margin: '100px auto', border: 'solid black 2px' }} component="form">
-                <Box sx={{ width: "90%", height: '90%', margin: 'auto', border: 'solid black 2px' }}>
-                    {messagesList !== null ? <MessagesList data={messagesList} /> : "Coucou les hahahahahaha"}
-                </Box>
-                <TextField value={messageContent} multiline rows={4} placeholder={"Send a message"} onChange={(e: any) => setMessageContent(e.target.value)} />
-                <IconButton onClick={handleSendMessage} disabled={messageContent.trim() === ""}>
-                    <SendIcon />
-                </IconButton>
-            </Box>
+            <MessagesList data={messagesList?.reverse()} handleSendMessage={handleSendMessage} messageContent={messageContent} setMessageContent={setMessageContent} />
+            <IconButton onClick={() => router.push("/channel/edit/"+id)} >
+                <PersonAddIcon/>
+            </IconButton>
+
         </>
     );
 }

@@ -19,11 +19,8 @@ import {UserData, UserMember} from "../../utils/type";
 import {Add} from "@mui/icons-material";
 import {createChannel} from "../../provider/ChannelProvider";
 import {useRouter} from "next/router";
-import {getToken} from "../../hooks/useGetAuthUserInfo";
-import { globalAxios as axios } from "../../config/axiosConf";
 import BasicModal from "../../components/Modal";
 import {getAllUsers} from "@/provider/AuthProvider";
-import {GetServerSideProps} from "next";
 
 export default function CreateChannel({suggestedMembers, token}){
     const [name, setName] = useState('');
@@ -181,7 +178,6 @@ export default function CreateChannel({suggestedMembers, token}){
                         } else {
                             type === "private" ? addChannel({name: name, type: type, members: memberId}) : addChannel({name: name, type: type, members: allMembersId})
                             console.log(memberId)
-                            console.log("all ", allMembersId)
                         }
                     }} >Add </Button>
                 </div>
@@ -192,31 +188,16 @@ export default function CreateChannel({suggestedMembers, token}){
     );
 }
 
-export async function getServerSideProps(context) {
-    const { req, res } = context;
-    let token = "";
-
-    const cookieHeader = req.headers.cookie;
-    if (cookieHeader) {
-        const cookies = cookieHeader.split("; ");
-        const tokenCookie = cookies.find((cookie) => cookie.startsWith("token="));
-        if (tokenCookie) {
-            token = tokenCookie.split("=")[1];
-        }
-    } else {
+export async function getServerSideProps({ req, res }) {
+    const token = req.cookies.token;
        if (!token) {
                 res.writeHead(302, { Location: '/login' });
                 res.end();
-            }
         }
-
     let users = await getAllUsers(token)
-
-    const dataUsers = users.data.users
-
         return {
             props: {
-                suggestedMembers: dataUsers,
+                suggestedMembers: users,
                 token
             }
         }

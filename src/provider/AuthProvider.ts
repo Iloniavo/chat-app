@@ -18,14 +18,19 @@ export const getCurrentUserInfo = async (token: string) => {
   return req.data.user
 }
 
-export const updateUserInfo = (user) => {
-  return axios.put("/user", user)
+export const updateUserInfo = (user, token) => {
+  return axios.put("/user", user, {
+    headers: {
+      Authorization: `Bearer ${token}` // Ajoutez l'en-tête d'autorisation avec le token
+    }
+})
 }
 
 export const getAllUsers = async (token: string) => {
-  return axios.get(`/users`, {
+  let req = await axios.get(`/users`, {
     headers: {
       Authorization: `Bearer ${token}` // Ajoutez l'en-tête d'autorisation avec le token
     }
   })
+  return req.data.users
 }

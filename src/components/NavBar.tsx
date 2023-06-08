@@ -7,6 +7,7 @@ import {
     Menu,
     MenuItem, ListItemIcon, ListItemText, Typography, ThemeProvider,
 } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Menu as MenuIcon, Person as PersonIcon, ExitToApp as ExitToAppIcon } from '@mui/icons-material';
 import {useRouter} from "next/router";
 import Cookies from "js-cookie";
@@ -73,9 +74,7 @@ const Navbar = ({handleSideBarOpen, title}) => {
                         user.name
                     </Typography>
                 </div>
-                <Avatar
-                    alt="User Avatar"
-                    src="/path/to/avatar.jpg"
+                <AccountCircleIcon
                     onClick={handleMenuOpen}
                     style={{cursor: "pointer"}}
                 />
