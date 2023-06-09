@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write \"src/**/*.+(js|ts|jsx|tsx)\""
   },
   "dependencies": {
     "@emotion/react": "^11.11.0",
@@ -27,7 +28,6 @@
     "localstorage": "npm:localStorage@^1.0.4",
     "localStorage": "^1.0.4",
     "next": "13.3.4",
-    "prettier": "^2.8.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
@@ -40,6 +40,7 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
-    "@types/js-cookie": "^3.0.3"
+    "@types/js-cookie": "^3.0.3",
+    "prettier": "^2.8.8"
   }
 }

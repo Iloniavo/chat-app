@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 //import FacebookIcon from "@mui/icons-material/FacebookRounded";
@@ -10,10 +10,9 @@ import { useGoogleAuth } from "../hooks";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import axios from "axios";
-import {loginWithEmail} from "../provider/AuthProvider";
-
+import { loginWithEmail } from "../provider/AuthProvider";
 
 export default function Login() {
   const router = useRouter();
@@ -24,15 +23,16 @@ export default function Login() {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm({ resolver: yupResolver(validationSchema) });
 
   const login = async (user) => {
-     await loginWithEmail(user)
-          .then((response) => {
-           response.data ? Cookies.set('token', response.data.user.token): console.log("Tsy mety");
-            router.push("/profile")
-          })
+    await loginWithEmail(user).then((response) => {
+      response.data
+        ? Cookies.set("token", response.data.user.token)
+        : console.log("Tsy mety");
+      router.push("/profile");
+    });
   };
 
   return (
@@ -102,8 +102,9 @@ export default function Login() {
                 fullWidth
                 variant="contained"
                 type="submit"
+                className="loginButton"
               >
-                Sign in
+                Login
               </Button>
 
               <Grid item xs={8}>

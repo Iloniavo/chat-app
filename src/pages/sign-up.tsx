@@ -8,7 +8,7 @@ import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import {createUser} from "../provider/AuthProvider";
+import { createUser } from "../provider/AuthProvider";
 import Cookies from "js-cookie";
 
 export default function SignUp() {
@@ -17,26 +17,34 @@ export default function SignUp() {
     password: yup.string().required("Password is required"),
     bio: yup.string().required("Bio is required"),
     name: yup.string().required("Name is required"),
-    confirmPassword: yup.string().required("Confirm your password").oneOf([yup.ref('password')], "Password does not matches")
+    confirmPassword: yup
+      .string()
+      .required("Confirm your password")
+      .oneOf([yup.ref("password")], "Password does not matches"),
   });
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(validationSchema), mode: "all",shouldUnregister: false,
-    criteriaMode: "all", });
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: "all",
+    shouldUnregister: false,
+    criteriaMode: "all",
+  });
 
   const router = useRouter();
 
   const SignUp = async (data: any) => {
     await createUser(data)
       .then((response) => {
-        response.data ? Cookies.set('token', response.data.user.token): console.log("Tsy mety");
-        router.push("/profile")
+        response.data
+          ? Cookies.set("token", response.data.user.token)
+          : console.log("Tsy mety");
+        router.push("/profile");
       })
       .catch((error) => console.error(error));
   };
-
 
   return (
     <div
@@ -92,6 +100,7 @@ export default function SignUp() {
                   id="filled-basic"
                   type="password"
                   label="Password"
+                  name="password"
                   variant="outlined"
                   {...register("password")}
                   name="password"
@@ -101,17 +110,18 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={8}>
                 <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    autoFocus
-                    id="filled-basic"
-                    type="password"
-                    label="Confirm password"
-                    variant="outlined"
-                    {...register("confirmPassword")}
-                    error={errors.confirmPassword}
-                    helperText={errors.confirmPassword?.message} //
+                  margin="normal"
+                  required
+                  fullWidth
+                  autoFocus
+                  id="filled-basic"
+                  type="password"
+                  label="Confirm password"
+                  name="confirmPassword"
+                  variant="outlined"
+                  {...register("confirmPassword")}
+                  error={errors.confirmPassword}
+                  helperText={errors.confirmPassword?.message} //
                 />
               </Grid>
               <Grid item xs={8}>
@@ -153,8 +163,9 @@ export default function SignUp() {
                   fullWidth
                   variant="contained"
                   type="submit"
+                  className="registerButton"
                 >
-                  Sign up
+                  Register
                 </Button>
                 <Stack
                   direction="column"

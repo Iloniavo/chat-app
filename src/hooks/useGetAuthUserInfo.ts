@@ -1,11 +1,11 @@
 import Cookies from "js-cookie";
 
 export const isAuthenticated = (): boolean => {
-  return !!Cookies.get('token');
+  return !!Cookies.get("token");
 };
 
 export const getToken = (): string => {
-  return <string>Cookies.get('token')
+  return <string>Cookies.get("token");
 };
 
 export const getServerSideToken = (context): string => {
@@ -20,5 +20,5 @@ export const getServerSideToken = (context): string => {
       token = tokenCookie.split("=")[1];
     }
   }
-return token
-}
+  return token;
+};

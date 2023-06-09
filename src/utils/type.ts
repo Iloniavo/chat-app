@@ -25,7 +25,7 @@ export interface UserMember {
   id: number;
   name: string;
   bio: string;
-  email:string
+  email: string;
 }
 
 export enum ChannelType {
@@ -34,34 +34,34 @@ export enum ChannelType {
 }
 
 export type Channels = {
-  id: number,
-  name: string,
-  type: ChannelType,
-  createdAt: string,
-  updatedAt: string,
-  owner: ChannelOwner,
-  ownerId: number
-}
+  id: number;
+  name: string;
+  type: ChannelType;
+  createdAt: string;
+  updatedAt: string;
+  owner: ChannelOwner;
+  ownerId: number;
+};
 
 export type ChannelOwner = {
-  id: number,
-  email: string,
-  name: string
-}
+  id: number;
+  email: string;
+  name: string;
+};
 
-export interface Message extends SendMessage{
-  id: number,
-  updatedAt: string,
-  createdAt: string,
-  senderId: number,
+export interface Message extends SendMessage {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  senderId: number;
   sender: {
-    id: number,
-    name: string,
-    email: string
-  }
+    id: number;
+    name: string;
+    email: string;
+  };
 }
 
 export interface SendMessage {
-  channelId: number,
-  content: string,
+  channelId: number;
+  content: string;
 }

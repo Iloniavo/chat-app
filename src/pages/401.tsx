@@ -1,7 +1,5 @@
-import React from "react"
+import React from "react";
 
-export default function Unauthorized(){
-    return(
-        <p>Please check your token </p>
-    )
+export default function Unauthorized() {
+  return <p>Please check your token </p>;
 }

@@ -4,9 +4,8 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { loginWithEmail, createUser } from "../provider/AuthProvider";
 
 type State = {
-  userLogged: UserData ;
-  token: string
-
+  userLogged: UserData;
+  token: string;
 };
 
 type Actions = {
@@ -18,11 +17,14 @@ type Actions = {
 export const useAuthStore = create<State & Actions>()(
   persist(
     (set) => ({
-        userLogged: null,
+      userLogged: null,
       createUser: async (user) => {
         try {
           await createUser(user).then((response: any) =>
-            set({ userLogged: response?.data?.user, token: response?.data.user.token })
+            set({
+              userLogged: response?.data?.user,
+              token: response?.data.user.token,
+            })
           );
         } catch (e) {
           throw e;
@@ -32,7 +34,7 @@ export const useAuthStore = create<State & Actions>()(
         loginWithEmail(user)
           .then((response: any) => {
             console.log(response.data);
-            set({ userLogged: response?.data?.user  });
+            set({ userLogged: response?.data?.user });
           })
           .catch((error) => console.log(error));
       },

@@ -1,7 +1,7 @@
 import React from "react";
-import {Avatar, Grid, Paper, Typography} from "@mui/material";
+import { Avatar, Grid, Paper, Typography } from "@mui/material";
 {
-    /*
+  /*
     paper: {
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
@@ -25,53 +25,52 @@ import {Avatar, Grid, Paper, Typography} from "@mui/material";
   },
     * */
 }
-export default function MessageItem({content, date, sender}){
-    return (
-        <Paper
-            elevation={2}
+export default function MessageItem({ content, date, sender }) {
+  return (
+    <Paper
+      elevation={2}
+      sx={{
+        padding: "8px",
+        marginBottom: "8px",
+        display: "flex",
+        alignItems: "center",
+        "&:last-child": {
+          marginBottom: 0,
+        },
+      }}
+    >
+      <Grid container direction="column">
+        <Grid item>
+          <Typography
+            variant="subtitle2"
             sx={{
-                padding: '8px',
-                marginBottom: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                '&:last-child': {
-                    marginBottom: 0,
-                },
+              fontWeight: "bold",
             }}
-        >
-            <Grid container direction="column">
-                <Grid item>
-                    <Typography
-                        variant="subtitle2"
-                        sx={{
-                            fontWeight: 'bold',
-                        }}
-                    >
-                        {sender}
-                    </Typography>
-                </Grid>
-                <Grid item>
-                    <Typography
-                        variant="body1"
-                        sx={{
-                            wordBreak: 'break-word',
-                        }}
-                    >
-                        {content}
-                    </Typography>
-                </Grid>
-                <Grid item>
-                    <Typography
-                        variant="caption"
-                        sx={{
-                            color: (theme) => theme.palette.text.secondary,
-                        }}
-                    >
-                        {date}
-                    </Typography>
-                </Grid>
-
-            </Grid>
-        </Paper>
-    )
+          >
+            {sender}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography
+            variant="body1"
+            sx={{
+              wordBreak: "break-word",
+            }}
+          >
+            {content}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography
+            variant="caption"
+            sx={{
+              color: (theme) => theme.palette.text.secondary,
+            }}
+          >
+            {date}
+          </Typography>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
 }
