@@ -50,8 +50,8 @@ export default function Profile({ currentUser, token }) {
         userName={currentUser.name}
       />
       <Sidebar handleClose={handleToggle} isOpen={isSideBarOpen} />
-      <Container maxWidth="sm">
-        <Typography variant="h4" component="h1" align="center" gutterBottom>
+      <Container sx={{ width: "35%" }}>
+        <Typography variant="h6" component="h1" align="center" gutterBottom>
           Update your informations
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -60,6 +60,7 @@ export default function Profile({ currentUser, token }) {
             type="email"
             fullWidth
             disabled
+            sx={{ mb: 3 }}
             defaultValue={currentUser.email}
             {...register("email")}
           />
@@ -71,6 +72,7 @@ export default function Profile({ currentUser, token }) {
             error={Boolean(errors.name)}
             helperText={errors.name?.message}
             defaultValue={currentUser.name}
+            sx={{ mb: 3 }}
           />
           <TextField
             label="Current password"
@@ -79,6 +81,7 @@ export default function Profile({ currentUser, token }) {
             {...register("currentPassword")}
             error={Boolean(errors.currentPassword)}
             helperText={errors.currentPassword?.message}
+            sx={{ mb: 3 }}
           />
           <TextField
             label="New password"
@@ -87,6 +90,7 @@ export default function Profile({ currentUser, token }) {
             {...register("newPassword")}
             error={Boolean(errors.newPassword)}
             helperText={errors.newPassword?.message}
+            sx={{ mb: 3 }}
           />
           <TextField
             label="Confirm new password"
@@ -95,6 +99,7 @@ export default function Profile({ currentUser, token }) {
             {...register("confirmNewPassword")}
             error={Boolean(errors.confirmNewPassword)}
             helperText={errors.confirmNewPassword?.message}
+            sx={{ mb: 3 }}
           />
           <TextField
             label="Bio"
@@ -103,6 +108,7 @@ export default function Profile({ currentUser, token }) {
             rows={4}
             defaultValue={currentUser.bio}
             {...register("bio")}
+            sx={{ mb: 3 }}
           />
           <Button
             type="submit"

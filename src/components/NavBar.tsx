@@ -87,7 +87,7 @@ const Navbar = ({ handleSideBarOpen, title, userName }) => {
             justifyContent: "space-between",
           }}
         >
-          <Typography>Channels</Typography>
+          <Typography>Chat</Typography>
           <Typography>{title}</Typography>
           <Typography sx={{ marginRight: "5px" }}>{userName}</Typography>
         </div>

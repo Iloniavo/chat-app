@@ -53,7 +53,7 @@ export default function Id({ channel, currentUser, id }) {
     <>
       <Navbar
         handleSideBarOpen={handleToggle}
-        title={channel.name}
+        title={"# " + channel.name}
         userName={currentUser.name}
       />
       <Sidebar isOpen={isSideBarOpen} />

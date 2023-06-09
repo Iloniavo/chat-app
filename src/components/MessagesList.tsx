@@ -50,7 +50,7 @@ export default function MessagesList({
           onClick={handleSendMessage}
           disabled={messageContent.trim() === ""}
         >
-          <SendIcon />
+          <SendIcon color={"primary"} />
         </IconButton>
       </Box>
     </div>

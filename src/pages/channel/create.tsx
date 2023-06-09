@@ -22,6 +22,8 @@ import { createChannel } from "../../provider/ChannelProvider";
 import { useRouter } from "next/router";
 import BasicModal from "../../components/Modal";
 import { getAllUsers, getCurrentUserInfo } from "@/provider/AuthProvider";
+import { toast, ToastContainer } from "react-toastify";
+import Toast from "@/components/Toast";
 
 export default function CreateChannel({
   suggestedMembers,
@@ -31,7 +33,6 @@ export default function CreateChannel({
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
-  const [memberId, setMemberId] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [idMembersToAdd, setIdMembersToAdd] = useState<number[]>();
@@ -89,10 +90,41 @@ export default function CreateChannel({
     } else {
       type === "private"
         ? addChannel({ name: name, type: type, members: idMembersToAdd }).then(
-            () => console.log(idMembersToAdd)
+            () => {
+              console.log(idMembersToAdd);
+              toast.success("blablabla", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                progressStyle: { background: "#04323A" },
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                style: {
+                  color: "#04323A",
+                },
+              });
+            }
           )
-        : addChannel({ name: name, type: type, members: allMembersId });
-      console.log(memberId);
+        : addChannel({ name: name, type: type, members: allMembersId }).then(
+            () =>
+              toast.success("blablabla", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                progressStyle: { background: "#04323A" },
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                style: {
+                  color: "#04323A",
+                },
+              })
+          );
     }
   };
 
@@ -161,7 +193,7 @@ export default function CreateChannel({
             disabled={type === "public"}
           />
           <Collapse in={type === "private"}>
-            <List style={{ height: "45vh", overflow: "auto" }}>
+            <List style={{ height: "40vh", overflow: "auto" }}>
               {filteredItems.length > 0 &&
                 filteredItems.map((item) => (
                   <ListItem key={item.id}>
@@ -193,6 +225,7 @@ export default function CreateChannel({
           </Button>
         </Box>
       </div>
+      <ToastContainer style={{ zIndex: "999999" }} />
     </>
   );
 }

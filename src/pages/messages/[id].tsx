@@ -5,11 +5,9 @@ import Sidebar from "@/components/SideBar";
 import React, { useState } from "react";
 import axios from "axios";
 import useSWR from "swr";
-import { useEffect } from "react";
 import { getUserById } from "@/provider/ChannelProvider";
 import { sendMessage } from "@/provider/MessageProvider";
 import MessagesList from "@/components/MessagesList";
-import { Message } from "@/utils/type";
 
 export default function Id({ currentUser, token, idRecipient, recipientUser }) {
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
@@ -26,7 +24,7 @@ export default function Id({ currentUser, token, idRecipient, recipientUser }) {
       .then((res) => res.data);
 
   const { data } = useSWR(
-    `http://localhost:8080/messages/${idRecipient}`,
+    `${process.env.NEXT_API_URL}/messages/${idRecipient}`,
     fetcher,
     { refreshInterval: 5000 }
   );
